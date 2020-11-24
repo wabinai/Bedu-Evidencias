@@ -1,0 +1,29 @@
+###RETO 1
+#Usando la base de datos sample_airbnblistingsAndReviews, realiza los siguientes filtros:
+
+•Propiedades que no permitan fiestas.
+{house_rules: /no parties|no party|parties not/i}
+•Propiedades que admitan mascotas.
+{house_rules: /pet friendly|Pets allowed/i}
+•Propiedades que no permitan fumadores.
+{house_rules: /No smoking/i}
+•Propiedades que no permitan fiestas ni fumadores.
+{house_rules: /no parties|no party|parties not|no smoking/i}
+
+###RETO 2
+#Usando la colección sample_airbnb.listingsAndReviews, agrega un filtro que permita obtener todas las publicaciones que tengan 50 o más comentarios, que la valoración sea mayor o igual a 80, que cuenten con conexión a Internet vía cable y estén ubicada en Brazil.
+
+{number_of_reviews: {$gte:50}, "review_scores.review_scores_rating":{$gte:80}, amenities: {$in:[/Ethernet/]},"address.country":"Brazil"}
+
+###RETO 3
+#Usando la colección sample_airbnb.listingsAndReviews, mediante el uso de agregaciones, encontrar el número de publicaciones que tienen conexión a Internet, sea desde Wifi o desde cable (Ethernet).
+
+[{$match: {
+  amenities: {
+      $in: ["Internet", "Wifi", "Ethernet"]}
+}}, {$group: {
+  _id: null,
+  Total_publicaciones: {
+    $sum: 1
+  }
+}}]
