@@ -1,0 +1,36 @@
+###RETO 1
+#Con base en el ejemplo 1, modifica el agrupamiento para que muestre el costo promedio por habitación por país de las propiedades de tipo casa.
+
+[{$match: {
+    property_type: "House",
+    bedrooms: {$gte: 1}
+}}, {$addFields: {
+  costo_recamara: {$divide: ["$price", "$bedrooms"]}
+}}, {$group: {
+  _id: "$address.country",
+  promedio_por_recamara: {
+    $avg: '$costo_recamara'
+  },
+  count: {
+    $sum:1
+  }
+}}]
+
+###RETO 2
+#Usando las colecciones comments y users, se requiere conocer el correo y contraseña de cada persona que realizó un comentario. Construye un pipeline que genere como resultado estos datos.
+
+[{$lookup: {
+  from: 'users',
+  localField: 'name',
+  foreignField: 'name',
+  as: 'usuario'
+}}, {$addFields: {
+  usuario_objeto: {$arrayElemAt: ["$usuario", 0]},
+}}, {$addFields: {
+  usuario_contraseña: "$usuario_objeto.password"
+}}, {$project: {
+  _id:0,
+  name:1,
+  email:1,
+  usuario_contraseña:1
+}}]
